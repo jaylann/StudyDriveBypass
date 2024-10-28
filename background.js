@@ -3,6 +3,9 @@ const DB_NAME = "PDFStore";
 const DB_VERSION = 1;
 const STORE_NAME = "pdfs";
 
+// Track ongoing PDF storage operations
+const storagePromises = new Set();
+
 // Open or create the IndexedDB
 function openDatabase() {
     return new Promise((resolve, reject) => {
@@ -28,7 +31,7 @@ function openDatabase() {
 // Add a PDF Blob to the store, including the title
 async function addPDF(pdfBlob, url, title) {
     const db = await openDatabase();
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
         const transaction = db.transaction([STORE_NAME], "readwrite");
         const store = transaction.objectStore(STORE_NAME);
         const record = {
@@ -47,6 +50,13 @@ async function addPDF(pdfBlob, url, title) {
             reject(event.target.error);
         };
     });
+
+    // Add the storage promise to the Set
+    storagePromises.add(promise);
+    // Remove the promise from the Set once it's settled
+    promise.finally(() => storagePromises.delete(promise));
+
+    return promise;
 }
 
 // Retrieve all PDFs from the store
@@ -160,6 +170,13 @@ browser.webRequest.onHeadersReceived.addListener(
 // Listen for extension button clicks to download stored PDFs
 browser.browserAction.onClicked.addListener(async () => {
     try {
+        // Wait for all ongoing storage operations to complete
+        if (storagePromises.size > 0) {
+            console.log("Waiting for ongoing PDF storage operations to complete...");
+            await Promise.all([...storagePromises]);
+            console.log("All PDF storage operations completed.");
+        }
+
         const pdfs = await getAllPDFs();
 
         if (pdfs.length === 0) {
