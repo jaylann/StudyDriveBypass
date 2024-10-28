@@ -25,8 +25,8 @@ function openDatabase() {
     });
 }
 
-// Add a PDF Blob to the store
-async function addPDF(pdfBlob, url) {
+// Add a PDF Blob to the store, including the title
+async function addPDF(pdfBlob, url, title) {
     const db = await openDatabase();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction([STORE_NAME], "readwrite");
@@ -34,6 +34,7 @@ async function addPDF(pdfBlob, url) {
         const record = {
             blob: pdfBlob,
             url: url,
+            title: title, // Store the tab title
             timestamp: Date.now()
         };
         const request = store.add(record);
@@ -84,8 +85,10 @@ async function clearPDFs() {
     });
 }
 
-// Object to keep track of PDF requests
-const pdfRequests = {};
+// Function to sanitize filename
+function sanitizeFilename(name) {
+    return name.replace(/[^a-z0-9_\-\.]/gi, '_');
+}
 
 // Listen for headers to identify PDF responses
 browser.webRequest.onHeadersReceived.addListener(
@@ -120,12 +123,28 @@ browser.webRequest.onHeadersReceived.addListener(
                     // Combine the data into a Blob
                     const blob = new Blob(data, { type: "application/pdf" });
 
-                    // Retrieve the original URL or other details
+                    // Retrieve the original URL
                     const originalUrl = details.url;
 
-                    // Store the PDF Blob in IndexedDB
-                    await addPDF(blob, originalUrl);
-                    console.log(`Stored PDF from: ${originalUrl}`);
+                    // Get the tab title
+                    let title = 'untitled';
+                    if (details.tabId !== -1) {
+                        try {
+                            const tab = await browser.tabs.get(details.tabId);
+                            title = tab.title || 'untitled';
+                            title = title.replace(".pdf", ""); // Remove .pdf from title
+                            title = title.replace(" - Download", ""); // Remove - Download from title
+                        } catch (tabError) {
+                            console.error("Error getting tab info:", tabError);
+                        }
+                    }
+
+                    // Sanitize the title to be a valid filename
+                    const sanitizedTitle = sanitizeFilename(title);
+
+                    // Store the PDF Blob in IndexedDB with the title
+                    await addPDF(blob, originalUrl, sanitizedTitle);
+                    console.log(`Stored PDF from: ${originalUrl} with title: ${sanitizedTitle}`);
                 } catch (err) {
                     console.error("Error storing PDF:", err);
                 }
@@ -144,12 +163,13 @@ browser.browserAction.onClicked.addListener(async () => {
         const pdfs = await getAllPDFs();
 
         if (pdfs.length === 0) {
+            console.log("No PDFs to download.");
             return;
         }
 
         for (const pdf of pdfs) {
             const url = URL.createObjectURL(pdf.blob);
-            const filename = `downloaded_${new Date(pdf.timestamp).toISOString().replace(/[:.]/g, "_")}.pdf`;
+            const filename = `${pdf.title}.pdf`; // Use the sanitized title
 
             try {
                 await browser.downloads.download({
