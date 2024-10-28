@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "StudyDrive Bypasser",
+  "version": "1.0",
+  "description": "Automatically downloads all visible PDF Documents on StudyDrive. You need to be signed in to StudyDrive for this to work. However you do not need to be a premium user.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://www.studydrive.net/*",
+    "downloads",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_title": "Download Document",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
