@@ -4,7 +4,7 @@
 
 **StudyDrive Bypasser** is a Firefox extension designed to PDF documents from StudyDrive. This tool simplifies the process of downloading PDFs without any restrictions, provided you are logged into your StudyDrive account. No premium subscription is required.
 
-Doesnt work on Chrome because google decided to deprecate Manifest V2 	ヽ༼ຈʖ̯ຈ༽ﾉ.
+Doesnt work on Chrome because google decided to deprecate Manifest V2	ヽ༼ຈʖ̯ຈ༽ﾉ.
 
 ---
 
@@ -70,6 +70,7 @@ All downloaded PDFs will be saved to your browser's default download directory. 
 - **Extension Not Detecting PDFs:**
     - Refresh the StudyDrive page and try again.
     - Make sure to click the extension icon after the document page has fully loaded (No spinning icon).
+    - Like really, wait a few seconds before clicking the extension icon.
     - Ensure you are logged into StudyDrive.
     - Verify that the extension is properly loaded in Firefox.
     - Check the browser console for any error messages.
@@ -87,5 +88,5 @@ All downloaded PDFs will be saved to your browser's default download directory. 
 
 ## Disclaimer
 
-**StudyDrive Bypasser** is intended for educational purposes only. Ensure that your use of this extension complies with StudyDrive's [Terms of Service](https://www.studydrive.net/terms) and all applicable laws. The author is not responsible for any misuse of this tool.
+**StudyDrive Bypasser** is intended for educational purposes only. Ensure that your use of this extension complies with StudyDrive's Terms of Service and all applicable laws. The author is not responsible for any misuse of this tool.
 
