@@ -90,3 +90,8 @@ All downloaded PDFs will be saved to your browser's default download directory. 
 
 **StudyDrive Bypasser** is intended for educational purposes only. Ensure that your use of this extension complies with StudyDrive's Terms of Service and all applicable laws. The author is not responsible for any misuse of this tool.
 
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://lanfermann.dev">Justin Lanfermann</a>
+</p>
