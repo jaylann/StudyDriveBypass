@@ -92,6 +92,9 @@ All downloaded PDFs will be saved to your browser's default download directory. 
 
 ---
 
+[Read more about this on my blog](https://lanfermann.dev/projects/study-drive-bypass)
+
+---
 <p align="center">
   Made with ❤️ by <a href="https://lanfermann.dev">Justin Lanfermann</a>
 </p>
